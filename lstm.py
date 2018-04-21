@@ -3,6 +3,10 @@ import torch.autograd as autograd
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+from utility import *
+
+# load data
+data = create_dataset()
 
 lstm = nn.LSTM(3, 3)  # Input dim is 3, output dim is 3
 inputs = [autograd.Variable(torch.randn((1,3)))
