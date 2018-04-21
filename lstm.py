@@ -9,6 +9,8 @@ from utility import *
 
 # load data
 data = create_dataset()
+split = int(len(data)*0.80)
+train, test = data[:split], data[split:]
 print "Dataset created"
 
 class Model(nn.Module):
@@ -41,9 +43,9 @@ optimizer = optim.Adam(model.parameters(), lr=1e-3)
 hidden = (autograd.Variable(torch.randn(1, 1, 9)),
          autograd.Variable(torch.randn((1, 1, 9))))
 
-inputs = [Variable(torch.Tensor(x)) for x in data[0][0]]
+#inputs = [Variable(torch.Tensor(x)) for x in data[0][0]]
 #outputs = [Variable(torch.Tensor(y)).view(1,9) for y in data[0][1]]
-outputs = [Variable(torch.Tensor(y)).view(1,9).long() for y in data[0][1]]
+#outputs = [Variable(torch.Tensor(y)).view(1,9).long() for y in data[0][1]]
 
 loss = 0
 
@@ -52,18 +54,22 @@ loss_array = []
 for epoch in xrange(10):
 	#l = 0
 	# Note: reset loss such that doesn't accumulate after each epoch
-	loss = 0
-	optimizer.zero_grad()
-	for i, label in zip(inputs,outputs):
-		# Step through the sequence one element at a time.
-		# after each step, hidden contains the hidden state.
-		out, hidden = model(i, hidden)
-		#loss += loss_function(out.view(1,9),label)
-		loss += loss_function(out.view(1,9), torch.max(label, 1)[1])
-		#l = loss
-	loss_array.append(loss[0].data.numpy().tolist()[0])
-	loss.backward(retain_graph=True)
-	optimizer.step()
+	for sequence in xrange(len(train)):
+		inputs = [Variable(torch.Tensor(x)) for x in train[sequence][0]]
+		outputs = [Variable(torch.Tensor(y)).view(1,9).long() for y in train[sequence][1]]		
+		loss = 0
+		optimizer.zero_grad()
+		for i, label in zip(inputs,outputs):
+			# Step through the sequence one element at a time.
+			# after each step, hidden contains the hidden state.
+			out, hidden = model(i, hidden)
+			#loss += loss_function(out.view(1,9),label)
+			loss += loss_function(out.view(1,9), torch.max(label, 1)[1])
+			#l = loss
+		loss_array.append(loss[0].data.numpy().tolist()[0])
+		print 'Sequence ', (sequence + 1)
+		loss.backward(retain_graph=True)
+		optimizer.step()
 
 np.save('lstm1_loss.npy',loss_array)
 
