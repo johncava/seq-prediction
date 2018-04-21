@@ -11,6 +11,6 @@ plt.plot(xrange(1, len(loss1) + 1), loss1, xrange(1, len(loss2) + 1), loss2, xra
 plt.legend(['LSTM (1)' , 'LSTM (2)', 'LSTM (3)'], loc='upper left')
 plt.xlabel('Iterations')
 plt.ylabel('Cross Entropy Loss')
-plt.title('Entropy Loss of LSTMs on one epoch of the dataset')
+plt.title('Entropy Loss of LSTMs on three epochs of the dataset')
 plt.show()
 plt.savefig('result3.png')

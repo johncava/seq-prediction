@@ -56,7 +56,7 @@ loss = 0
 
 loss_array = []
 
-for epoch in xrange(1):
+for epoch in xrange(3):
 	#l = 0
 	# Note: reset loss such that doesn't accumulate after each epoch
 	for sequence in xrange(len(train)):
@@ -79,4 +79,4 @@ for epoch in xrange(1):
 
 np.save('lstm1_loss.npy',loss_array)
 print 'Done 1'
-
+torch.save(model.state_dict(), "lstm1.model")

@@ -47,7 +47,7 @@ hidden2 = (autograd.Variable(torch.randn(1, 1, 9)),
 
 loss = 0
 loss_array = []
-for epoch in xrange(1):
+for epoch in xrange(3):
 	# Note: reset loss such that doesn't accumulate after each epoch
 	for sequence in xrange(len(train)):
 		inputs = [Variable(torch.Tensor(x)) for x in train[sequence][0]]
@@ -68,3 +68,4 @@ for epoch in xrange(1):
 
 np.save('lstm2_loss.npy',loss_array)
 print 'Done 2'
+torch.save(model.state_dict(), "lstm2.model")
