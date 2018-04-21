@@ -3,6 +3,7 @@ import torch.autograd as autograd
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+import numpy as np
 from torch.autograd import Variable
 from utility import *
 
@@ -46,6 +47,8 @@ outputs = [Variable(torch.Tensor(y)).view(1,9).long() for y in data[0][1]]
 
 loss = 0
 
+loss_array = []
+
 for epoch in xrange(10):
 	#l = 0
 	# Note: reset loss such that doesn't accumulate after each epoch
@@ -58,7 +61,10 @@ for epoch in xrange(10):
 		#loss += loss_function(out.view(1,9),label)
 		loss += loss_function(out.view(1,9), torch.max(label, 1)[1])
 		#l = loss
-	print loss[0].data.numpy().tolist()[0]
+	loss_array.append(loss[0].data.numpy().tolist()[0])
 	loss.backward(retain_graph=True)
 	optimizer.step()
+
+np.save('lstm1_loss.npy',loss_array)
+
 
