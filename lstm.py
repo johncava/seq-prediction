@@ -9,7 +9,18 @@ from utility import *
 # load data
 data = create_dataset()
 print "Dataset created"
-lstm = nn.LSTM(22, 9)  # Input dim is 3, output dim is 3
+
+class Model(nn.Module):
+	def __init__(self):
+		super(Model, self).__init__()
+		self.lstm = nn.LSTM(22,9)
+		self.sigmoid = nn.Sigmoid()
+
+	def forward(self,i, hidden):
+		out, hidden = self.lstm(i.view(1, 1, -1), hidden)
+		return out, hidden
+
+#lstm = nn.LSTM(22, 9)  # Input dim is 22, output dim is 9
 
 '''
 inputs = [autograd.Variable(torch.randn((1,3)))
@@ -21,8 +32,9 @@ outputs =[autograd.Variable(torch.Tensor(y)).view(1,1,3)
 #print inputs
 #print outputs
 #loss_function = nn.MSELoss()
+model = Model()
 loss_function = nn.CrossEntropyLoss()
-optimizer = optim.Adam(lstm.parameters(), lr=1e-3)
+optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
 # initialize the hidden state. Keep hidden layer resets out of the training phase (maybe except when testing)
 hidden = (autograd.Variable(torch.randn(1, 1, 9)),
@@ -42,7 +54,7 @@ for epoch in xrange(10):
 	for i, label in zip(inputs,outputs):
 		# Step through the sequence one element at a time.
 		# after each step, hidden contains the hidden state.
-		out, hidden = lstm(i.view(1, 1, -1), hidden)
+		out, hidden = model(i, hidden)
 		#loss += loss_function(out.view(1,9),label)
 		loss += loss_function(out.view(1,9), torch.max(label, 1)[1])
 		#l = loss
