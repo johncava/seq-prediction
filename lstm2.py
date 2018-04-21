@@ -19,11 +19,17 @@ class Model(nn.Module):
 		self.lstm = nn.LSTM(22,9)
 		self.lstm2 = nn.LSTM(9,9)
 		#self.sigmoid = nn.Sigmoid()
+		self.hidden = self.init_hidden()
+		self.hidden2 = self.init_hidden()
 
-	def forward(self,i, hidden,hidden2):
-		out, hidden = self.lstm(i.view(1, 1, -1), hidden)
-		out2, hidden2 = self.lstm2(out.view(1,1,-1), hidden2)
-		return out2, hidden, hidden2
+	def init_hidden(self):
+		return (autograd.Variable(torch.randn(1, 1, 9)),
+				autograd.Variable(torch.randn((1, 1, 9))))
+
+	def forward(self,i):
+		out, self.hidden = self.lstm(i.view(1, 1, -1), self.hidden)
+		out2, self.hidden2 = self.lstm2(out.view(1,1,-1), self.hidden2)
+		return out2
 
 model = Model()
 loss_function = nn.CrossEntropyLoss()
@@ -41,21 +47,23 @@ hidden2 = (autograd.Variable(torch.randn(1, 1, 9)),
 
 loss = 0
 loss_array = []
-for epoch in xrange(10):
+for epoch in xrange(1):
 	# Note: reset loss such that doesn't accumulate after each epoch
 	for sequence in xrange(len(train)):
 		inputs = [Variable(torch.Tensor(x)) for x in train[sequence][0]]
 		outputs = [Variable(torch.Tensor(y)).view(1,9).long() for y in train[sequence][1]]	
 		loss = 0
 		optimizer.zero_grad()
+		model.hidden = model.init_hidden()
+		model.hidden2 = model.init_hidden()
 		for i, label in zip(inputs,outputs):
 			# Step through the sequence one element at a time.
 			# after each step, hidden contains the hidden state.
-			out, hidden, hidden2 = model(i, hidden, hidden2)
+			out = model(i)
 			loss += loss_function(out.view(1,9), torch.max(label, 1)[1])
 		loss_array.append(loss[0].data.numpy().tolist()[0])
 		#print 'Sequence ', (sequence + 1)
-		loss.backward(retain_graph=True)
+		loss.backward()#retain_graph=True)
 		optimizer.step()
 
 np.save('lstm2_loss.npy',loss_array)
