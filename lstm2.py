@@ -54,9 +54,9 @@ for epoch in xrange(10):
 			out, hidden, hidden2 = model(i, hidden, hidden2)
 			loss += loss_function(out.view(1,9), torch.max(label, 1)[1])
 		loss_array.append(loss[0].data.numpy().tolist()[0])
-		print 'Sequence ', (sequence + 1)
+		#print 'Sequence ', (sequence + 1)
 		loss.backward(retain_graph=True)
 		optimizer.step()
 
 np.save('lstm2_loss.npy',loss_array)
-
+print 'Done 2'
