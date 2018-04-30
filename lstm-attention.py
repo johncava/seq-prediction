@@ -51,10 +51,10 @@ loss_function = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 loss_array = []
 
-for epoch in xrange(3):
+for epoch in xrange(1):
 	#l = 0
 	# Note: reset loss such that doesn't accumulate after each epoch
-	for sequence in xrange(5):#len(train)):
+	for sequence in xrange(len(train)):
 		inputs = [Variable(torch.Tensor(x)) for x in train[sequence][0]]
 		outputs = [Variable(torch.Tensor(y)).view(1,9).long() for y in train[sequence][1]]		
 		loss = 0
@@ -72,7 +72,6 @@ for epoch in xrange(3):
 		print 'Sequence ', (sequence + 1)
 		loss.backward()#retain_graph=True)
 		optimizer.step()
-	break
-#np.save('lstm1_loss.npy',loss_array)
-print 'Done '
-#torch.save(model.state_dict(), "lstm1.model")
+np.save('lstm_attention_loss.npy',loss_array)
+print 'Done'
+torch.save(model.state_dict(), "lstm-attention.model")
