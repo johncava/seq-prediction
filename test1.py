@@ -21,8 +21,8 @@ class Model(nn.Module):
 		self.hidden = self.init_hidden()
 
 	def init_hidden(self):
-		return (autograd.Variable(torch.randn(1, 1, 9)),
-			autograd.Variable(torch.randn((1, 1, 9))))
+		return (autograd.Variable(torch.zeros(1, 1, 9)),
+			autograd.Variable(torch.zeros((1, 1, 9))))
 
 	def forward(self,i):
 		out, self.hidden = self.lstm(i.view(1, 1, -1), self.hidden)
