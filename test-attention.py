@@ -58,7 +58,8 @@ for sequence in xrange(len(test)):
         for i, label in zip(inputs, output):
                 prediction = model(i).view(1,9)
                 a = torch.max(prediction,1)[1].data.numpy().tolist()[0]
-                b = torch.max(label,0)[1].data.numpy().tolist()[0]
+                b = torch.max(label,0)[1].data.numpy().tolist()
+                #print a,b
                 if a == b:
 			accuracy += 1
 	print sequence
