@@ -7,7 +7,7 @@ from torch.autograd import Variable
 from utility import *
 
 # load data
-data = create_dataset(0)
+data = create_dataset(1)
 split = int(len(data)*0.80)
 train, test = data[:split], data[split:]
 print "Dataset created"
@@ -15,7 +15,7 @@ print "Dataset created"
 class Model(nn.Module):
 	def __init__(self):
 		super(Model, self).__init__()
-		self.lstm = nn.LSTM(22,9)
+		self.lstm = nn.LSTM(4,9)
 		self.sigmoid = nn.Sigmoid()
 		self.hidden = self.init_hidden()
 
@@ -28,11 +28,11 @@ class Model(nn.Module):
 		return out
 
 model = Model()
-model.load_state_dict(torch.load('lstm1.model'))
+model.load_state_dict(torch.load('lstm1_aap.model'))
 
 # Testin
 average_list = []
-for sequence in xrange(len(test) - 2):
+for sequence in xrange(len(test)):
 	inputs = [Variable(torch.Tensor(x)) for x in test[sequence][0]]
 	output = [Variable(torch.Tensor(y)) for y in test[sequence][1]]
 	model.hidden = model.init_hidden()

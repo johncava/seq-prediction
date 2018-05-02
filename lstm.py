@@ -8,7 +8,7 @@ from torch.autograd import Variable
 from utility import *
 
 # load data
-data = create_dataset()
+data = create_dataset(0)
 split = int(len(data)*0.80)
 train, test = data[:split], data[split:]
 print "Dataset created"
